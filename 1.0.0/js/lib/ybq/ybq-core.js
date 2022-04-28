@@ -1,15 +1,12 @@
-﻿/// <reference path="~/js/lib/jquery.min.js" />
-/// <reference path="~/js/lib/typeahead.bundle.min.js" />
-/// <reference path="~/js/lib/jquery-confirm.min.js" />
-
-
-///////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////
 //
-// Youbiquitous YBQ : app starter 
-// Copyright (c) Youbiquitous srl 2020
+// Youbiquitous Web Assets
+// Copyright (c) Youbiquitous 2022
 //
 // Author: Youbiquitous Team
-// 
+// v2.0.0  (April 22, 2022)
+//
+
 
 String.prototype.capitalize = function () {
     return this.replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); });

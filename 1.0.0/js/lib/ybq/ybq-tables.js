@@ -1,13 +1,10 @@
-﻿/// <reference path="~/content/scripts/jquery-3.1.1.min.js" />
-
-
-
-///////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////
 //
-// Youbiquitous YBQ : TABLES and PAGINATION
-// Copyright (c) Youbiquitous srls 2020
+// Youbiquitous Web Assets
+// Copyright (c) Youbiquitous 2022
 //
 // Author: Youbiquitous Team
+// v2.0.0  (April 22, 2022)
 //
 
 

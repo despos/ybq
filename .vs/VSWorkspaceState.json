@@ -2,9 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\1.0.0",
+    "\\1.0.0\\css",
     "\\1.0.0\\css\\lib",
-    "\\1.0.0\\js\\lib"
+    "\\1.0.0\\css\\lib\\ybq",
+    "\\1.0.0\\js",
+    "\\1.0.0\\js\\lib",
+    "\\1.0.0\\js\\lib\\ybq"
   ],
-  "SelectedNode": "\\1.0.0\\css",
   "PreviewInSolutionExplorer": false
 }

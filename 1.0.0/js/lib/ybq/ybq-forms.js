@@ -1,4 +1,13 @@
-﻿//var YbqForms = YbqForms || {};
+﻿///////////////////////////////////////////////////////////////////
+//
+// Youbiquitous Web Assets
+// Copyright (c) Youbiquitous 2022
+//
+// Author: Youbiquitous Team
+// v2.0.0  (April 22, 2022)
+//
+
+//var YbqForms = YbqForms || {};
 
 
 //////////////////////////////////////////////////////////////////
@@ -48,7 +57,8 @@ $("input[type=text]")
                     $(uiElem).html("");
             }
         })
-    .on("input", function() {
+    .on("input", 
+        function() {
         // UI elements for showing errors
         var uiElem = $(this).data("error-ui");
         if (uiElem !== null)
@@ -59,38 +69,143 @@ $("input[type=text]")
 //////////////////////////////////////////////////////////////////
 //
 // YBQ FORMS
-// Number 
+// Number (min/max, decimals)
 //
 $("input[type=number]")
-    .on("keypress",
+    .on("keypress", 
         function (event) {
+            var chr = event.charCode;
+            var decimalSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
+            if (chr === decimalSep.charCodeAt(0))
+                return true;
             if (event.charCode < 48 || event.charCode > 57) {
                 event.preventDefault();
                 return false;
             }
+            return true;
         })
-    .on("keyup", function () {
+    .on("keyup", 
+        function () {
         var buffer = $(this).val();
         var maxLength = parseInt($(this).attr("maxlength"));
         if (buffer.length > maxLength) {
             $(this).val("");
             return false;
         }
-        var minVal = parseInt($(this).attr("min"));
-        var maxVal = parseInt($(this).attr("max"));
+        var minVal = parseFloat($(this).attr("min"));
+        var maxVal = parseFloat($(this).attr("max"));
         if (isNaN(minVal)) {
             minVal = 0;
         }
         if (isNaN(maxVal)) {
             maxVal = 1000000;
         }
-        var number = parseInt(buffer);
+        var number = parseFloat(buffer);
         if (number < minVal || number > maxVal) {
             $(this).val("");
             return false;
         }
         return true;
+    })
+    .on("change",
+        function() {
+        var decimals = parseInt($(this).data("decimals"));
+        if (isNaN(decimals))
+            decimals = 0;
+        var val = parseFloat($(this).val());
+        $(this).val(val.toFixed(decimals));
     });
+
+//////////////////////////////////////////////////////////////////
+//
+// YBQ FORMS
+// Number -- autoformatting for thousands, decimals, min/max
+//
+$("input[type=numeric]")
+    .on('keyup',
+        function() {
+            var requestedDecimals = parseInt($(this).data("decimals"));
+            var buddy = "#" + $(this).data("ref");
+            if (isNaN(requestedDecimals))
+                requestedDecimals = 0;
+
+            var raw = $(this).val();
+            var num = parseFloat(raw.replace(/[^\d]/g, '')).toFixed(requestedDecimals);
+            $("#amount").val(num);
+
+            var splits = raw.split('.');
+            var intPart = splits[0];
+            var decPart = splits[1];
+
+            // Handle int part
+            var x = intPart.replace(/[^\d]/g, '');
+            var i = parseFloat(x);
+            if (isNaN(i)) {
+                $(this).val("0");
+                $(buddy).val("0");
+                return true;
+            }
+
+            // Handle decimal part
+            var intPartFmt = i.toLocaleString();
+            if (requestedDecimals === 0) {
+                $(this).val(intPartFmt);
+                $(buddy).val(i);
+                return true;
+            }
+
+            // Format
+            if (decPart === undefined) {
+                $(this).val(intPartFmt);
+                $(buddy).val(i);
+                return true;
+            }
+            if (decPart == null || decPart.length === 0) {
+                $(this).val(intPartFmt + ".");
+                $(buddy).val(i);
+                return true;
+            }
+
+            var digits = decPart.substr(0, requestedDecimals);
+            $(this).val(intPartFmt + "." + digits);
+            $(buddy).val(i + parseFloat("0." + digits));
+            return true;
+        })
+    .on("blur", function() {
+        var buddy = "#" + $(this).data("ref");
+        var requestedDecimals = parseInt($(this).data("decimals"));
+        var num = parseFloat(parseFloat($(buddy).val()).toFixed(requestedDecimals));
+        if (isNaN(num))
+            return;
+        var min = parseFloat(parseFloat($(this).attr("min")).toFixed(requestedDecimals));
+        var max = parseFloat(parseFloat($(this).attr("max")).toFixed(requestedDecimals));
+        if (isNaN(min)) {
+            min = -1000000000000;
+        }
+        if (isNaN(max)) {
+            max = 1000000000000;
+        }
+
+        // If empty but not required => valid input
+        var text = $.trim($(this).val());
+        var required = $(this).attr("required") !== undefined;
+        var invalid = (text.length === 0 && required);
+
+        // UI elements for showing errors
+        var message = $(this).data("error");
+        var uiElem = $(this).data("error-ui");
+
+        if (invalid || (num < min || num > max)) {
+            $(this).addClass("is-invalid");
+            if (uiElem !== null)
+                $(uiElem).html(message);
+        } else {
+            $(this).removeClass("is-invalid");
+            if (uiElem !== null)
+                $(uiElem).html("");
+        }
+    });
+
 
 //////////////////////////////////////////////////////////////////
 //
@@ -280,6 +395,7 @@ function __initializeInputFile(container) {
     // Sets up CLICK handler for the remover
     $(removerId).click(function () {
         inputFile.val("");
+        inputFile.trigger("change");
         $(previewId).removeAttr("src").removeAttr("title");
         $(previewId).hide();
         $(placeholderId).show();

@@ -1,9 +1,10 @@
 ﻿///////////////////////////////////////////////////////////////////
 //
-// Youbiquitous YBQ : app starter 
-// Copyright (c) Youbiquitous srls 2018
+// Youbiquitous Web Assets
+// Copyright (c) Youbiquitous 2022
 //
 // Author: Youbiquitous Team
+// v2.0.0  (April 22, 2022)
 //
 
 var __AppName = "MESSAGE";
