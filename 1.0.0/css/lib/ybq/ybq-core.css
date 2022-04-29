@@ -64,11 +64,11 @@
     color: var(--app-light);
 }
 
-    .btn-default:hover {
-        background: var(--app-grey);
-        opacity: 0.9;
-        color: var(--app-light);
-    }
+.btn-default:hover {
+    background: var(--app-grey);
+    opacity: 0.9;
+    color: var(--app-light);
+}
 
 
 /**** Borders ****/
@@ -120,7 +120,11 @@
     filter: sepia(100%) hue-rotate(190deg) saturate(200%);
 }
 
-/**** Personalization ****/
+/**** Bootstrap Personalization ****/
+.blockquote-footer::before {
+    content: "\2014";
+}
+
 .jumbotron {
     padding: 50px;
     background-color: var(--app-lightgrey);
