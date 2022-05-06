@@ -13,9 +13,9 @@ var __AppName = "MESSAGE";
 // Display a modal message to dismiss (uses jquery.confirm.min.js)
 // </summary>
 Ybq.alert = function (message, success, partial, ms) {
-    var done = "<i class='fa fa-check text-success mr-2'></i>";
-    var fail = "<i class='far fa-times-circle text-danger mr-2'></i>";
-    var warn = "<i class='fa fa-exclamation-triangle text-warning mr-2'></i>";
+    var done = "<i class='fa fa-check text-success me-2'></i>";
+    var fail = "<i class='far fa-times-circle text-danger me-2'></i>";
+    var warn = "<i class='fa fa-exclamation-triangle text-warning me-2'></i>";
 
     var titleText = "";
     var msgTokens = message.split('|');
