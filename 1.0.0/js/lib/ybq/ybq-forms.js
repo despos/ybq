@@ -7,9 +7,6 @@
 // v2.0.0  (April 22, 2022)
 //
 
-//var YbqForms = YbqForms || {};
-
-
 //////////////////////////////////////////////////////////////////
 //
 // YBQ FORMS
@@ -71,50 +68,50 @@ $("input[type=text]")
 // YBQ FORMS
 // Number (min/max, decimals)
 //
-$("input[type=number]")
-    .on("keypress", 
-        function (event) {
-            var chr = event.charCode;
-            var decimalSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
-            if (chr === decimalSep.charCodeAt(0))
-                return true;
-            if (event.charCode < 48 || event.charCode > 57) {
-                event.preventDefault();
-                return false;
-            }
-            return true;
-        })
-    .on("keyup", 
-        function () {
-        var buffer = $(this).val();
-        var maxLength = parseInt($(this).attr("maxlength"));
-        if (buffer.length > maxLength) {
-            $(this).val("");
-            return false;
-        }
-        var minVal = parseFloat($(this).attr("min"));
-        var maxVal = parseFloat($(this).attr("max"));
-        if (isNaN(minVal)) {
-            minVal = 0;
-        }
-        if (isNaN(maxVal)) {
-            maxVal = 1000000;
-        }
-        var number = parseFloat(buffer);
-        if (number < minVal || number > maxVal) {
-            $(this).val("");
-            return false;
-        }
-        return true;
-    })
-    .on("change",
-        function() {
-        var decimals = parseInt($(this).data("decimals"));
-        if (isNaN(decimals))
-            decimals = 0;
-        var val = parseFloat($(this).val());
-        $(this).val(val.toFixed(decimals));
-    });
+//$("input[type=number]")
+//    .on("keypress", 
+//        function (event) {
+//            var chr = event.charCode;
+//            var decimalSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
+//            if (chr === decimalSep.charCodeAt(0))
+//                return true;
+//            if (event.charCode < 48 || event.charCode > 57) {
+//                event.preventDefault();
+//                return false;
+//            }
+//            return true;
+//        })
+//    .on("keyup", 
+//        function () {
+//        var buffer = $(this).val();
+//        var maxLength = parseInt($(this).attr("maxlength"));
+//        if (buffer.length > maxLength) {
+//            $(this).val("");
+//            return false;
+//        }
+//        var minVal = parseFloat($(this).attr("min"));
+//        var maxVal = parseFloat($(this).attr("max"));
+//        if (isNaN(minVal)) {
+//            minVal = 0;
+//        }
+//        if (isNaN(maxVal)) {
+//            maxVal = 1000000;
+//        }
+//        var number = parseFloat(buffer);
+//        if (number < minVal || number > maxVal) {
+//            $(this).val("");
+//            return false;
+//        }
+//        return true;
+//    })
+//    .on("change",
+//        function() {
+//        var decimals = parseInt($(this).data("decimals"));
+//        if (isNaN(decimals))
+//            decimals = 0;
+//        var val = parseFloat($(this).val());
+//        $(this).val(val.toFixed(decimals));
+//    });
 
 //////////////////////////////////////////////////////////////////
 //
@@ -133,11 +130,13 @@ $("input[type=numeric]")
             var num = parseFloat(raw.replace(/[^\d]/g, '')).toFixed(requestedDecimals);
             $("#amount").val(num);
 
-            var splits = raw.split('.');
+            var decSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
+
+            var splits = raw.split(decSep);
             var intPart = splits[0];
             var decPart = splits[1];
 
-            // Handle int part
+            // Handle integer part
             var x = intPart.replace(/[^\d]/g, '');
             var i = parseFloat(x);
             if (isNaN(i)) {
@@ -145,8 +144,6 @@ $("input[type=numeric]")
                 $(buddy).val("0");
                 return true;
             }
-
-            // Handle decimal part
             var intPartFmt = i.toLocaleString();
             if (requestedDecimals === 0) {
                 $(this).val(intPartFmt);
@@ -154,20 +151,20 @@ $("input[type=numeric]")
                 return true;
             }
 
-            // Format
+            // Handle decimal part 
             if (decPart === undefined) {
                 $(this).val(intPartFmt);
                 $(buddy).val(i);
                 return true;
             }
             if (decPart == null || decPart.length === 0) {
-                $(this).val(intPartFmt + ".");
+                $(this).val(intPartFmt + decSep);
                 $(buddy).val(i);
                 return true;
             }
 
             var digits = decPart.substr(0, requestedDecimals);
-            $(this).val(intPartFmt + "." + digits);
+            $(this).val(intPartFmt + decSep + digits);
             $(buddy).val(i + parseFloat("0." + digits));
             return true;
         })
@@ -435,7 +432,6 @@ function __initializeInputFile(container) {
 // <summary>
 // Makes internal changes based on the state of INPUT elements
 // </summary>
-//YbqForms.applyInternalState = function (inputFile) {
 function __applyInternalState(inputFile) {
     // Get further references
     var baseId = "#" + $(inputFile).attr("id");
@@ -472,7 +468,6 @@ function __applyInternalState(inputFile) {
 // <summary>
 // Reset custom INPUT file to original configuration
 // </summary>
-//YbqForms.resetInternalState = function (inputFile) {
 function __resetInternalState(inputFile) {
     var isDefinedId = "#" + inputFile.attr("id") + "-isdefined";
     $(isDefinedId).val($(isDefinedId).data("orig"));
@@ -484,7 +479,6 @@ function __resetInternalState(inputFile) {
 // <summary>
 // Set SRC in case of missing images
 // </summary>
-//YbqForms.defaultImage = function(img, defaultImg) {
 function __defaultImage(img, defaultImg) {
     img.onerror = "";
     img.src = defaultImg;
@@ -613,3 +607,5 @@ function __togglePswdView(elem) {
     }
     pswd.focus();
 }
+
+
