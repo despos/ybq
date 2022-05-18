@@ -126,12 +126,8 @@ $("input[type=numeric]")
             if (isNaN(requestedDecimals))
                 requestedDecimals = 0;
 
-            var raw = $(this).val();
-            var num = parseFloat(raw.replace(/[^\d]/g, '')).toFixed(requestedDecimals);
-            $("#amount").val(num);
-
             var decSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
-
+            var raw = $(this).val();
             var splits = raw.split(decSep);
             var intPart = splits[0];
             var decPart = splits[1];
@@ -140,7 +136,8 @@ $("input[type=numeric]")
             var x = intPart.replace(/[^\d]/g, '');
             var i = parseFloat(x);
             if (isNaN(i)) {
-                $(this).val("0");
+                //$(this).val("0");
+                $(this).val("");
                 $(buddy).val("0");
                 return true;
             }
@@ -202,6 +199,7 @@ $("input[type=numeric]")
                 $(uiElem).html("");
         }
     });
+
 
 
 //////////////////////////////////////////////////////////////////
