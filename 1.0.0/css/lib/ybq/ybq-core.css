@@ -313,3 +313,12 @@ hr {
         background-color: #d2f4ea;
         backgrou2nd-color: #3399ff;
     }
+
+
+.table {
+    --bs-table-hover-bg: #d2f4ea;
+}
+
+.table-hover tbody tr {
+    cursor: pointer;
+} 
