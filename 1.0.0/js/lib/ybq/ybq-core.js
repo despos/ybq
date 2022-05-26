@@ -93,7 +93,7 @@ Ybq.post = function (url, data, success, error) {
     }
 
     // Add a hiding timer for hiding the element
-    $.fn.clearAfter = function(secs) {
+    $.fn.hideAfter = function(secs) {
         secs = (typeof secs !== 'undefined') ? secs : 3;
         var item = $(this);
         window.setTimeout(function () {
