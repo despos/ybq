@@ -1490,6 +1490,7 @@ function __autoCompleter_options_builder(
     inputFieldSelector,
     buddyFieldSelector,
     postSelector,
+	urlOnSelection,
     itemTemplate) {
     var options = {
 		maxHeight: height,
@@ -1521,7 +1522,12 @@ function __autoCompleter_options_builder(
             onChooseEvent: function() {
                 var id = $(inputFieldSelector).getSelectedItemData()[valueProperty];
                 $(buddyFieldSelector).val(id);
-                $(postSelector)[0].click();
+				if (urlOnSelection.length > 0) {
+					var actualUrl = urlOnSelection.replace("$", id);
+					window.location = actualUrl;
+				} else {
+					$(postSelector)[0].click();
+				}
             }
         },
         template: {
