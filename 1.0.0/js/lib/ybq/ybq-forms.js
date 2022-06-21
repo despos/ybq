@@ -4,8 +4,10 @@
 // Copyright (c) Youbiquitous 2022
 //
 // Author: Youbiquitous Team
-// v2.0.0  (April 22, 2022)
+// v2.0.0  (June 21, 2022)
 //
+
+
 
 //////////////////////////////////////////////////////////////////
 //
@@ -54,8 +56,7 @@ $("input[type=text]")
                     $(uiElem).html("");
             }
         })
-    .on("input", 
-        function() {
+    .on("input", function() {
         // UI elements for showing errors
         var uiElem = $(this).data("error-ui");
         if (uiElem !== null)
@@ -66,141 +67,38 @@ $("input[type=text]")
 //////////////////////////////////////////////////////////////////
 //
 // YBQ FORMS
-// Number (min/max, decimals)
+// Number 
 //
-//$("input[type=number]")
-//    .on("keypress", 
-//        function (event) {
-//            var chr = event.charCode;
-//            var decimalSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
-//            if (chr === decimalSep.charCodeAt(0))
-//                return true;
-//            if (event.charCode < 48 || event.charCode > 57) {
-//                event.preventDefault();
-//                return false;
-//            }
-//            return true;
-//        })
-//    .on("keyup", 
-//        function () {
-//        var buffer = $(this).val();
-//        var maxLength = parseInt($(this).attr("maxlength"));
-//        if (buffer.length > maxLength) {
-//            $(this).val("");
-//            return false;
-//        }
-//        var minVal = parseFloat($(this).attr("min"));
-//        var maxVal = parseFloat($(this).attr("max"));
-//        if (isNaN(minVal)) {
-//            minVal = 0;
-//        }
-//        if (isNaN(maxVal)) {
-//            maxVal = 1000000;
-//        }
-//        var number = parseFloat(buffer);
-//        if (number < minVal || number > maxVal) {
-//            $(this).val("");
-//            return false;
-//        }
-//        return true;
-//    })
-//    .on("change",
-//        function() {
-//        var decimals = parseInt($(this).data("decimals"));
-//        if (isNaN(decimals))
-//            decimals = 0;
-//        var val = parseFloat($(this).val());
-//        $(this).val(val.toFixed(decimals));
-//    });
-
-//////////////////////////////////////////////////////////////////
-//
-// YBQ FORMS
-// Number -- autoformatting for thousands, decimals, min/max
-//
-$("input[type=numeric]")
-    .on('keyup',
-        function() {
-            var requestedDecimals = parseInt($(this).data("decimals"));
-            var buddy = "#" + $(this).data("ref");
-            if (isNaN(requestedDecimals))
-                requestedDecimals = 0;
-
-            var decSep = (1.1).toLocaleString().match(/\d(.*?)\d/)[1];
-            var raw = $(this).val();
-            var splits = raw.split(decSep);
-            var intPart = splits[0];
-            var decPart = splits[1];
-
-            // Handle integer part
-            var x = intPart.replace(/[^\d]/g, '');
-            var i = parseFloat(x);
-            if (isNaN(i)) {
-                //$(this).val("0");
-                $(this).val("");
-                $(buddy).val("0");
-                return true;
+$("input[type=number]")
+    .on("keypress",
+        function (event) {
+            if (event.charCode < 48 || event.charCode > 57) {
+                event.preventDefault();
+                return false;
             }
-            var intPartFmt = i.toLocaleString();
-            if (requestedDecimals === 0) {
-                $(this).val(intPartFmt);
-                $(buddy).val(i);
-                return true;
-            }
-
-            // Handle decimal part 
-            if (decPart === undefined) {
-                $(this).val(intPartFmt);
-                $(buddy).val(i);
-                return true;
-            }
-            if (decPart == null || decPart.length === 0) {
-                $(this).val(intPartFmt + decSep);
-                $(buddy).val(i);
-                return true;
-            }
-
-            var digits = decPart.substr(0, requestedDecimals);
-            $(this).val(intPartFmt + decSep + digits);
-            $(buddy).val(i + parseFloat("0." + digits));
-            return true;
         })
-    .on("blur", function() {
-        var buddy = "#" + $(this).data("ref");
-        var requestedDecimals = parseInt($(this).data("decimals"));
-        var num = parseFloat(parseFloat($(buddy).val()).toFixed(requestedDecimals));
-        if (isNaN(num))
-            return;
-        var min = parseFloat(parseFloat($(this).attr("min")).toFixed(requestedDecimals));
-        var max = parseFloat(parseFloat($(this).attr("max")).toFixed(requestedDecimals));
-        if (isNaN(min)) {
-            min = -1000000000000;
+    .on("keyup", function () {
+        var buffer = $(this).val();
+        var maxLength = parseInt($(this).attr("maxlength"));
+        if (buffer.length > maxLength) {
+            $(this).val("");
+            return false;
         }
-        if (isNaN(max)) {
-            max = 1000000000000;
+        var minVal = parseInt($(this).attr("min"));
+        var maxVal = parseInt($(this).attr("max"));
+        if (isNaN(minVal)) {
+            minVal = 0;
         }
-
-        // If empty but not required => valid input
-        var text = $.trim($(this).val());
-        var required = $(this).attr("required") !== undefined;
-        var invalid = (text.length === 0 && required);
-
-        // UI elements for showing errors
-        var message = $(this).data("error");
-        var uiElem = $(this).data("error-ui");
-
-        if (invalid || (num < min || num > max)) {
-            $(this).addClass("is-invalid");
-            if (uiElem !== null)
-                $(uiElem).html(message);
-        } else {
-            $(this).removeClass("is-invalid");
-            if (uiElem !== null)
-                $(uiElem).html("");
+        if (isNaN(maxVal)) {
+            maxVal = 1000000;
         }
+        var number = parseInt(buffer);
+        if (number < minVal || number > maxVal) {
+            $(this).val("");
+            return false;
+        }
+        return true;
     });
-
-
 
 //////////////////////////////////////////////////////////////////
 //
@@ -319,6 +217,10 @@ $("input[type=password]").each(function() {
     }
 }).on("blur",
     function() {
+        // UI elements for showing errors
+        var message = $(this).data("error");
+        var uiElem = $(this).data("error-ui");
+
         var pswd = $.trim($(this).val());
         var minLength = parseInt($(this).attr("minlength"));
         var maxLength = parseInt($(this).attr("maxlength"));
@@ -329,10 +231,15 @@ $("input[type=password]").each(function() {
             maxLength = 100;
         }
         if (pswd.length < minLength ||
-            pswd.length > maxLength)
+            pswd.length > maxLength) {
             $(this).addClass("is-invalid");
-        else
+            if (uiElem !== null)
+                $(uiElem).html(message);
+        } else {
             $(this).removeClass("is-invalid");
+            if (uiElem !== null)
+                $(uiElem).html("");
+        }
     });
 
 
@@ -390,7 +297,6 @@ function __initializeInputFile(container) {
     // Sets up CLICK handler for the remover
     $(removerId).click(function () {
         inputFile.val("");
-        inputFile.trigger("change");
         $(previewId).removeAttr("src").removeAttr("title");
         $(previewId).hide();
         $(placeholderId).show();
@@ -430,6 +336,7 @@ function __initializeInputFile(container) {
 // <summary>
 // Makes internal changes based on the state of INPUT elements
 // </summary>
+//YbqForms.applyInternalState = function (inputFile) {
 function __applyInternalState(inputFile) {
     // Get further references
     var baseId = "#" + $(inputFile).attr("id");
@@ -466,6 +373,7 @@ function __applyInternalState(inputFile) {
 // <summary>
 // Reset custom INPUT file to original configuration
 // </summary>
+//YbqForms.resetInternalState = function (inputFile) {
 function __resetInternalState(inputFile) {
     var isDefinedId = "#" + inputFile.attr("id") + "-isdefined";
     $(isDefinedId).val($(isDefinedId).data("orig"));
@@ -477,6 +385,7 @@ function __resetInternalState(inputFile) {
 // <summary>
 // Set SRC in case of missing images
 // </summary>
+//YbqForms.defaultImage = function(img, defaultImg) {
 function __defaultImage(img, defaultImg) {
     img.onerror = "";
     img.src = defaultImg;
@@ -605,5 +514,3 @@ function __togglePswdView(elem) {
     }
     pswd.focus();
 }
-
-
