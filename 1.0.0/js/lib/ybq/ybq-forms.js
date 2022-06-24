@@ -243,6 +243,24 @@ $("input[type=password]").each(function() {
     });
 
 
+
+//////////////////////////////////////////////////////////////////
+//
+// YBQ FORMS
+// File
+//
+$("input[type=file]").on("change", function() {
+    var file = $(this).val();
+    var buddy = $(this).data("button");
+    if (file.length === 0 && buddy != null) {
+        $(buddy).attr("disabled", "disabled");
+    } else if (file.length > 0 && buddy != null) {
+        $(buddy).removeAttr("disabled", "disabled");
+    }
+});
+
+
+
 //////////////////////////////////////////////////////////////////
 //
 // YBQ FORMS
