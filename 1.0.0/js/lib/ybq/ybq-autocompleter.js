@@ -1498,7 +1498,7 @@ function __autoCompleter_options_builder(
         requestDelay: delay,
         url: function(phrase) {
             if ($.trim(phrase).length > 0) {
-                return url.replace("$", phrase);
+                return url.replace("*", phrase);
             } else {
                 return "";
             }
@@ -1523,7 +1523,7 @@ function __autoCompleter_options_builder(
                 var id = $(inputFieldSelector).getSelectedItemData()[valueProperty];
                 $(buddyFieldSelector).val(id);
 				if (urlOnSelection.length > 0) {
-					var actualUrl = urlOnSelection.replace("$", id);
+					var actualUrl = urlOnSelection.replace("*", id);
 					window.location = actualUrl;
 				} else {
 					$(postSelector)[0].click();
