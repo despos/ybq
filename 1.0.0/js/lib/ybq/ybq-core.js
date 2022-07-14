@@ -1,12 +1,11 @@
-﻿///////////////////////////////////////////////////////////////////
+﻿
+///////////////////////////////////////////////////////////////////
 //
-// Youbiquitous Web Assets
-// Copyright (c) Youbiquitous 2022
+// Youbiquitous YBQ : app starter 
+// Copyright (c) Youbiquitous srl 2020
 //
-// Author: Youbiquitous Team
-// v2.0.0  (May 5, 2022)
-//
-
+// Author: Dino Esposito (http://youbiquitous.net)
+// 
 
 String.prototype.capitalize = function () {
     return this.replace(/(?:^|\s)\S/g, function (a) { return a.toUpperCase(); });
@@ -72,7 +71,96 @@ Ybq.post = function (url, data, success, error) {
     return defer.promise();
 };
 
+// <summary>
+// WRAPPER for common operations on Twitter TypeAhead
+// </summary>
+var TypeAheadContainerSettings = function() {
+    var that = {};
+    that.postOnSelection = false;
+    that.displayKey = 'value';
+    that.hintUrl = '';
+    that.targetSelector = '';
+    that.buddySelector = '';
+    that.submitSelector = '';
+    that.showHint = true;
+    that.maxNumberOfHints = 10;
+    that.highlight = true;
+    that.showLabel = true;
+    that.action = function () {};
+    return that;
+};
 
+var TypeAheadContainer = function(options) {
+    var settings = new TypeAheadContainerSettings();
+    jQuery.extend(settings, options);
+
+    // Set up the default Bloodhound hint adapter
+    this.hintAdapter = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace(settings.displayKey),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        limit: settings.maxNumberOfHints,
+        remote: settings.hintUrl
+    });
+
+    // Register handlers
+    $(settings.targetSelector).on('typeahead:selected',
+        function(e, datum) {
+            $(settings.targetSelector).attr("data-itemselected", 1);
+            $(settings.buddySelector).val(datum.id);
+
+            // Post on selection
+            if (settings.postOnSelection) {
+                $(settings.submitSelector).click();
+            }
+
+            // Call custom action
+            if (settings.action != null) {
+                (settings.action)(datum.id);
+            }
+        });
+    $(settings.targetSelector).on('blur',
+        function() {
+            var typeaheadItemSelected = $(settings.targetSelector).attr("data-itemselected");
+            if (typeaheadItemSelected !== "1") {
+                $(settings.targetSelector).val("");
+                $(settings.buddySelector).val("");
+            }
+        });
+    $(settings.targetSelector).on('input',
+        function() {
+            var typeaheadItemSelected = $(settings.targetSelector).attr("data-itemselected");
+            if (typeaheadItemSelected === "1") {
+                $(settings.targetSelector).attr("data-itemselected", 0);
+                $(settings.buddySelector).val('');
+                $(settings.targetSelector).val('');
+            }
+        });
+
+    // Initializer
+    this.attach = function() {
+        this.hintAdapter.initialize();
+        $(settings.targetSelector).typeahead(
+            {
+                hint: settings.showHint,
+                highlight: settings.highlight,
+                limit: settings.maxNumberOfHints,
+                autoSelect: false
+            },
+            {
+                displayKey: settings.displayKey,
+                source: this.hintAdapter.ttAdapter(),
+                templates: {
+                    suggestion: function (data) {
+                        var label = settings.showLabel
+                            ? "<i class='float-end'>" + (data.label == null ? "" : data.label) + "</i>"
+                            : "";
+                        return "<p><span>" + data.value + "</span>" + label + "</p>";
+                    }
+                }
+            }
+        );
+    };
+};
 
 
 // <summary>
@@ -92,18 +180,8 @@ Ybq.post = function (url, data, success, error) {
         return $(this);
     }
 
-    // Add a hiding timer for hiding the element
-    $.fn.hideAfter = function(secs) {
-        secs = (typeof secs !== 'undefined') ? secs : 3;
-        var item = $(this);
-        window.setTimeout(function () {
-            $(item).addClass("d-none");
-        }, secs * 1000);
-        return $(this);
-    }
-
     // Add a cleaning timer for the HTML content of the element
-    $.fn.clearAfter = function(secs) {
+    $.fn.hideAfter = function(secs) {
         secs = (typeof secs !== 'undefined') ? secs : 3;
         var item = $(this);
         window.setTimeout(function () {
@@ -150,6 +228,21 @@ Ybq.post = function (url, data, success, error) {
     }
     $.fn.overlayOff = function() {
         return $(this).addClass("d-none");
+    }
+
+    // Remove d-none
+    $.fn.visible = function() {
+        return $(this).removeClass("d-none");
+    }
+
+    // Add a d-none hiding timer for the element
+    $.fn.invisibleAfter = function(secs) {
+        secs = (typeof secs !== 'undefined') ? secs : 3;
+        var item = $(this);
+        window.setTimeout(function () {
+            $(item).addClass("d-none"); 
+        }, secs * 1000);
+        return $(this);
     }
 
 }(jQuery));
