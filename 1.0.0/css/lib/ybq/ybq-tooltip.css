@@ -1,0 +1,29 @@
+
+/* Custom tag to define content */
+tooltip {
+    display: none;
+    position: absolute;
+    content: '';
+    top: 120%;
+    left: 0%;
+    height: auto;
+    background-color: #303030;
+    border-radius: 5px;
+    color: white !important;
+    padding: 10px;
+    z-index: 9999;
+    clear: both;
+}
+
+/* Indicator */
+/*    tooltip::before {
+        content: "\A";
+        border-style: solid;
+        border-width: 10px 15px 10px 0;
+        transform: rotate(90deg);
+        border-color: transparent #303030 transparent transparent;
+        position: absolute;
+        left: 8px;
+        top: -14px;
+    }*/
+
